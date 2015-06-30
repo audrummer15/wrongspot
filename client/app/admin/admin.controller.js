@@ -18,6 +18,7 @@ angular.module('wrongspotApp')
       role: 'user'
     };
 
+    $scope.status = "Ready";
     var originalUser = angular.copy($scope.user);
 
     function resetForm() {
@@ -27,17 +28,24 @@ angular.module('wrongspotApp')
     }
 
     $scope.delete = function(user) {
+      var currentUser = Auth.getCurrentUser();
+
+      console.log(user, currentUser);
+      if (user.email === currentUser.email) {
+        return $scope.status = "You can't delete yourself!";
+      }
       User.remove({ id: user._id });
       angular.forEach($scope.users, function(u, i) {
         if (u === user) {
           $scope.users.splice(i, 1);
+          $scope.status = "User successfully removed.";
         }
       });
     };
 
     $scope.addUser = function(form) {
       $scope.submitted = true;
-      $scope.result = false;
+      $scope.status = "Ready";
 
       if(form.$valid) {
         Auth.addUser({
@@ -47,7 +55,7 @@ angular.module('wrongspotApp')
           role: $scope.user.role
         })
         .then( function() {
-          $scope.result = "User successfully created.";
+          $scope.status = "User successfully created.";
           $scope.users = User.query();
         })
         .then( function() {

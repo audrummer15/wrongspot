@@ -2,8 +2,9 @@
 
 <div class="container" ng-show="isAdmin">
  <div class="row">
-    <p>The delete user and user index api routes are restricted to users with the 'admin' role.</p>
-    <ul class="list-group">
+    <h2> Administration Panel </h2>
+    <p ng-show="status">Status: {{status}}</p>
+    <ul style="margin-top: 20px;" class="list-group">
       <li class="list-group-item" ng-repeat="user in users">
           <strong>{{user.name}}</strong><br>
           <span class="text-muted">{{user.email}}</span>
@@ -15,7 +16,6 @@
   <div class="row">
     <div class="col-md-6">
       <h1>Add User</h1>
-      <p ng-show="result">{{result}}</p>
     </div>
   </div>
   <div class="row">
