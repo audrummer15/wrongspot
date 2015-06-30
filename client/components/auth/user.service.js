@@ -17,6 +17,12 @@ angular.module('wrongspotApp')
         params: {
           id:'me'
         }
+      },
+      addUser: {
+        method: 'POST',
+        params: {
+          id:'new'
+        }
       }
 	  });
   });

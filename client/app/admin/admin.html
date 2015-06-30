@@ -1,6 +1,6 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="container">
+<div class="container" ng-show="isAdmin">
  <div class="row">
     <p>The delete user and user index api routes are restricted to users with the 'admin' role.</p>
     <ul class="list-group">
@@ -68,14 +68,16 @@
           </p>
         </div>
 
-        <div class="row">
+        <div class="form-group">
           <div class="btn-group">
-            <label class="btn btn-primary" ng-repeat="role in roles" ng-model="userRole" btn-radio="'{{role}}'">{{role}}</label>
+            <label class="btn btn-info" ng-model="user.role" btn-radio="'guest'">Guest</label>
+            <label class="btn btn-info" ng-model="user.role" btn-radio="'user'">User</label>
+            <label class="btn btn-info" ng-model="user.role" btn-radio="'admin'">Admin</label>
           </div>
         </div>
 
         <div>
-          <button class="btn btn-inverse btn-lg btn-login" type="submit">
+          <button class="btn btn-primary btn-lg btn-login" type="submit">
             Add
           </button>
         </div>

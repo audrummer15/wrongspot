@@ -72,6 +72,31 @@ angular.module('wrongspotApp')
       },
 
       /**
+       * Add a new user from Admin panel
+       *
+       * @param  {Object}   user     - user info
+       * @param  {Function} callback - optional
+       * @return {Promise}
+       */
+      addUser: function(user, callback) {
+        if (!currentUser.role === 'admin') {
+          return new Error("You're not allowed to do that!");
+        }
+
+        var cb = callback || angular.noop;
+        
+        user.provider = 'local';
+
+        return User.addUser(user,
+          function(data) {
+            return cb(user);
+          },
+          function(err) {
+            return cb(err);
+          }.bind(this)).$promise;
+      },
+
+      /**
        * Change password
        *
        * @param  {String}   oldPassword
