@@ -66,9 +66,13 @@ exports.show = function (req, res, next) {
  * restriction: 'admin'
  */
 exports.destroy = function(req, res) {
-  User.findByIdAndRemove(req.params.id, function(err, user) {
-    if(err) return res.send(500, err);
-    return res.send(204);
+  User.findById(req.params.id, function (err, user) {
+    if(err) { return handleError(res, err); }
+    if(!user) { return res.send(404); }
+    user.remove(function(err) {
+      if(err) { return handleError(res, err); }
+      return res.send(204);
+    });
   });
 };
 

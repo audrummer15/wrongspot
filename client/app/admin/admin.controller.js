@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('wrongspotApp')
-  .controller('AdminCtrl', function ($scope, $http, $location, Auth, User) {
+  .controller('AdminCtrl', function ($scope, $http, $location, Auth, User, socket) {
 
     $scope.isAdmin = Auth.isAdmin();
     if (!$scope.isAdmin) {
@@ -10,6 +10,7 @@ angular.module('wrongspotApp')
 
     // Use the User $resource to fetch all users
     $scope.users = User.query();
+    socket.syncUpdates('user', $scope.users);
 
     $scope.user = {
       name: '',
@@ -30,17 +31,15 @@ angular.module('wrongspotApp')
     $scope.delete = function(user) {
       var currentUser = Auth.getCurrentUser();
 
-      console.log(user, currentUser);
       if (user.email === currentUser.email) {
         return $scope.status = "You can't delete yourself!";
       }
-      User.remove({ id: user._id });
-      angular.forEach($scope.users, function(u, i) {
-        if (u === user) {
-          $scope.users.splice(i, 1);
+      $http.delete('/api/users/' + user._id)
+        .then(function() {
           $scope.status = "User successfully removed.";
-        }
-      });
+        }).catch(function(err) {
+          $scope.status = err;
+        });
     };
 
     $scope.addUser = function(form) {
@@ -56,7 +55,6 @@ angular.module('wrongspotApp')
         })
         .then( function() {
           $scope.status = "User successfully created.";
-          $scope.users = User.query();
         })
         .then( function() {
           resetForm();
@@ -73,4 +71,8 @@ angular.module('wrongspotApp')
         });
       }
     };
+
+    $scope.$on('$destroy', function () {
+      socket.unsyncUpdates('thing');
+    });
   });
