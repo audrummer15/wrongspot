@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('wrongspotApp')
-  .controller('NavbarCtrl', function ($scope, $location, Auth) {
+  .controller('NavbarCtrl', function ($scope, $location, Auth, socket) {
     $scope.menu = [{
       'title': 'Home',
       'link': '/'
@@ -14,6 +14,7 @@ angular.module('wrongspotApp')
 
     $scope.logout = function() {
       Auth.logout();
+      socket.logout();
       $location.path('/login');
     };
 

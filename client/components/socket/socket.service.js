@@ -69,6 +69,10 @@ angular.module('wrongspotApp')
       unsyncUpdates: function (modelName) {
         socket.removeAllListeners(modelName + ':save');
         socket.removeAllListeners(modelName + ':remove');
+      },
+
+      logout: function() {
+        socket.disconnect();
       }
     };
   });
