@@ -1,12 +1,18 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="container" ng-show="isAdmin">
+<div class="container" ng-hide="isReady">
+  <div class="row">
+    <h2> Administration Panel </h2>
+    <p> Status: Please refresh the page </p>
+  </div>
+</div>
+<div class="container" ng-show="isAdmin && isReady">
  <div class="row">
     <h2> Administration Panel </h2>
     <p ng-show="status">Status: {{status}}</p>
     <ul style="margin-top: 20px;" class="list-group">
-      <li class="list-group-item" ng-repeat="user in users">
-          <strong>{{user.name}}</strong><br>
+      <li class="list-group-item" ng-repeat="user in users | orderBy:'role'">
+          <strong>{{user.name}} ({{user.role}}) </strong><br>
           <span class="text-muted">{{user.email}}</span>
           <a ng-click="delete(user)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a>
       </li>
@@ -70,9 +76,7 @@
 
         <div class="form-group">
           <div class="btn-group">
-            <label class="btn btn-info" ng-model="user.role" btn-radio="'guest'">Guest</label>
-            <label class="btn btn-info" ng-model="user.role" btn-radio="'user'">User</label>
-            <label class="btn btn-info" ng-model="user.role" btn-radio="'admin'">Admin</label>
+            <label class="btn btn-info" ng-repeat="role in userRoles" ng-model="user.role" btn-radio="'{{role}}'">{{role | capitalize}}</label>
           </div>
         </div>
 

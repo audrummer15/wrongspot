@@ -8,6 +8,15 @@ angular.module('wrongspotApp')
       return $location.path('/');
     }
 
+    $scope.isReady = false;
+
+    socket.socket.emit('request:userRoles');
+
+    socket.socket.on('message:userRoles', function (data) {
+      $scope.userRoles = data.userRoles;
+      $scope.isReady = true;
+    });
+
     // Use the User $resource to fetch all users
     $scope.users = User.query();
     socket.syncUpdates('user', $scope.users);
@@ -75,4 +84,9 @@ angular.module('wrongspotApp')
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('thing');
     });
+  })
+  .filter('capitalize', function() {
+    return function(input) {
+      return input.charAt(0).toUpperCase() + input.substr(1).toLowerCase();
+    }
   });
