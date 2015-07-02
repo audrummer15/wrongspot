@@ -15,7 +15,7 @@ angular.module('wrongspotApp')
     $scope.logout = function() {
       Auth.logout();
       socket.logout();
-      $location.path('/login');
+      $location.path('/');
     };
 
     $scope.isActive = function(route) {
