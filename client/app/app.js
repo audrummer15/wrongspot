@@ -8,7 +8,8 @@ angular.module('wrongspotApp', [
   'ui.router',
   'ui.bootstrap'
 ])
-  .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
+  .config(function ($stateProvider, $urlRouterProvider,
+                    $locationProvider, $httpProvider) {
     $urlRouterProvider
       .otherwise('/');
 
@@ -16,7 +17,8 @@ angular.module('wrongspotApp', [
     $httpProvider.interceptors.push('authInterceptor');
   })
 
-  .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
+  .factory('authInterceptor',
+  function ($rootScope, $q, $cookieStore, $location) {
     return {
       // Add authorization token to headers
       request: function (config) {

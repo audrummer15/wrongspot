@@ -45,8 +45,10 @@ module.exports = function (socketio) {
   }));
 
   socketio.on('connection', function (socket) {
-    socket.address = (socket.handshake.address !== null && socket.request.connection.remotePort) ?
-            socket.handshake.address.address + ':' + socket.request.connection.remotePort :
+    socket.address = (socket.handshake.address !== null &&
+      socket.request.connection.remotePort) ?
+            socket.handshake.address.address + ':' +
+            socket.request.connection.remotePort :
             process.env.DOMAIN;
 
     socket.connectedAt = new Date();
