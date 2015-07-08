@@ -7,97 +7,119 @@
   </div>
 </div>
 <div class="container" ng-show="isAdmin && isReady">
- <div class="row">
+  <div class="row">
     <h2> Administration Panel </h2>
     <p ng-show="status">Status: {{status}}</p>
-    <ul style="margin-top: 20px;" class="list-group">
-      <li class="list-group-item" ng-repeat="user in users | orderBy:'role'">
-          <strong>{{user.name}} ({{user.role}}) </strong><br>
-          <span class="text-muted">{{user.email}}</span>
-          <a ng-click="delete(user)" class="trash">
-            <span class="glyphicon glyphicon-trash pull-right"></span>
-          </a>
-      </li>
-    </ul>
   </div>
 
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Add User</h1>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <form class="form" name="form" ng-submit="addUser(form)" novalidate>
+  <tabset justified="true" style="border: 1px;">
+    <tab heading="Users">
+      <div class="row col-lg-12">
+        <ul style="margin-top: 20px;" class="list-group">
+          <li class="list-group-item"
+            ng-repeat="user in users | orderBy:'role'">
+            <strong>{{user.name}} ({{user.role}}) </strong><br>
+            <span class="text-muted">{{user.email}}</span>
+            <a ng-click="deleteUser(user)" class="trash">
+              <span class="glyphicon glyphicon-trash pull-right"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
-        <div class="form-group" ng-class="{
-          'has-success': form.name.$valid && submitted,
-          'has-error': form.name.$invalid && submitted
-        }">
-          <label>Name</label>
-
-          <input type="text" name="name" class="form-control"
-            ng-model="user.name"
-                 required/>
-          <p class="help-block"
-            ng-show="form.name.$error.required && submitted">
-            A name is required
-          </p>
+      <div class="row">
+        <div class="col-md-6">
+          <h1>Add User</h1>
         </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <form class="form" name="htmlUserForm"
+            ng-submit="addUser(htmlUserForm)" novalidate>
 
-        <div class="form-group" ng-class="{
-          'has-success': form.email.$valid && submitted,
-          'has-error': form.email.$invalid && submitted }">
-          <label>Email</label>
+            <div class="form-group" ng-class="{
+              'has-success': htmlUserForm.name.$valid && userFormSubmitted,
+              'has-error': htmlUserForm.name.$invalid && userFormSubmitted
+            }">
+              <label>Name</label>
 
-          <input type="email" name="email" class="form-control"
-            ng-model="user.email" required mongoose-error/>
-          <p class="help-block" ng-show="form.email.$error.email && submitted">
-            Doesn't look like a valid email.
-          </p>
-          <p class="help-block"
-            ng-show="form.email.$error.required && submitted">
-            What's your email address?
-          </p>
-          <p class="help-block" ng-show="form.email.$error.mongoose">
-            {{ errors.email }}
-          </p>
+              <input type="text" name="name" class="form-control"
+                ng-model="userForm.name"
+                     required/>
+              <p class="help-block"
+                ng-show="htmlUserForm.name.$error.required && userFormSubmitted">
+                A name is required
+              </p>
+            </div>
+
+            <div class="form-group" ng-class="{
+              'has-success': htmlUserForm.email.$valid && userFormSubmitted,
+              'has-error': htmlUserForm.email.$invalid && userFormSubmitted }">
+              <label>Email</label>
+
+              <input type="email" name="email" class="form-control"
+                ng-model="userForm.email" required mongoose-error/>
+              <p class="help-block"
+                ng-show="htmlUserForm.email.$error.email && userFormSubmitted">
+                Doesn't look like a valid email.
+              </p>
+              <p class="help-block"
+                ng-show="htmlUserForm.email.$error.required && userFormSubmitted">
+                What's your email address?
+              </p>
+              <p class="help-block" ng-show="htmlUserForm.email.$error.mongoose">
+                {{ errors.email }}
+              </p>
+            </div>
+
+            <div class="form-group" ng-class="{
+              'has-success': htmlUserForm.password.$valid && userFormSubmitted,
+              'has-error': htmlUserForm.password.$invalid && userFormSubmitted }">
+              <label>Password</label>
+
+              <input type="password" name="password" class="form-control"
+                ng-model="userForm.password" ng-minlength="3"
+                required mongoose-error/>
+              <p class="help-block" ng-show="(htmlUserForm.password.$error.minlength ||
+                htmlUserForm.password.$error.required) && userFormSubmitted">
+                Password must be at least 3 characters.
+              </p>
+              <p class="help-block" ng-show="htmlUserForm.password.$error.mongoose">
+                {{ errors.password }}
+              </p>
+            </div>
+
+            <div class="form-group">
+              <div class="btn-group">
+                <label class="btn btn-info" ng-repeat="role in userRoles"
+                  ng-model="userForm.role" btn-radio="'{{role}}'">
+                  {{role | capitalize}}
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <button class="btn btn-primary btn-lg btn-login" type="submit">
+                Add
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
+    </tab>
 
-        <div class="form-group" ng-class="{
-          'has-success': form.password.$valid && submitted,
-          'has-error': form.password.$invalid && submitted }">
-          <label>Password</label>
-
-          <input type="password" name="password" class="form-control"
-            ng-model="user.password" ng-minlength="3"
-            required mongoose-error/>
-          <p class="help-block" ng-show="
-             (form.password.$error.minlength || form.password.$error.required)
-             && submitted">
-            Password must be at least 3 characters.
-          </p>
-          <p class="help-block" ng-show="form.password.$error.mongoose">
-            {{ errors.password }}
-          </p>
-        </div>
-
-        <div class="form-group">
-          <div class="btn-group">
-            <label class="btn btn-info" ng-repeat="role in userRoles"
-              ng-model="user.role" btn-radio="'{{role}}'">
-              {{role | capitalize}}
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <button class="btn btn-primary btn-lg btn-login" type="submit">
-            Add
-          </button>
-        </div>
-        
-      </form>
-    </div>
-  </div>
+    <tab heading="Lots">
+      <div class="row col-lg-12">
+        <ul style="margin-top: 20px;" class="list-group">
+          <li class="list-group-item"
+            ng-repeat="lot in lots | orderBy:'name'">
+            <strong>{{lot.name}}</strong><br>
+            <a ng-click="deleteLot(lot)" class="trash">
+              <span class="glyphicon glyphicon-trash pull-right"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </tab>
+  </tabset>
 </div>

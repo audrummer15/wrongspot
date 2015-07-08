@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('wrongspotApp')
-  .controller('AdminCtrl', function ($scope, $http, $location, Auth, User, socket) {
+  .controller('AdminCtrl', function ($scope, $http, $location,
+                                      Auth, User, Lot, socket) {
 
     $scope.isAdmin = Auth.isAdmin();
     if (!$scope.isAdmin) {
@@ -21,23 +22,34 @@ angular.module('wrongspotApp')
     $scope.users = User.query();
     socket.syncUpdates('user', $scope.users);
 
-    $scope.user = {
+    // Use the Lot $resource to fetch all lots
+    $scope.lots = Lot.query();
+    socket.syncUpdates('lot', $scope.lots);
+
+    $scope.userForm = {
       name: '',
       email: '',
       password: '',
       role: 'user'
     };
 
-    $scope.status = "Ready";
-    var originalUser = angular.copy($scope.user);
+    $scope.lotForm = {
+      name: '',
+      info: ''
+    };
 
-    function resetForm() {
-      $scope.submitted = false;
-      $scope.user = angular.copy(originalUser);
-      $scope.form.$setPristine();
+    $scope.status = "Ready";
+    var originalUser = angular.copy($scope.userForm);
+    var originalLot = angular.copy($scope.lotForm);
+
+    // User tab related functions
+    function resetUserForm(form) {
+      $scope.userFormSubmitted = false;
+      $scope.userForm = angular.copy(originalUser);
+      form.$setPristine();
     }
 
-    $scope.delete = function(user) {
+    $scope.deleteUser = function(user) {
       var currentUser = Auth.getCurrentUser();
 
       if (user.email === currentUser.email) {
@@ -52,21 +64,21 @@ angular.module('wrongspotApp')
     };
 
     $scope.addUser = function(form) {
-      $scope.submitted = true;
+      $scope.userFormSubmitted = true;
       $scope.status = "Ready";
 
       if(form.$valid) {
         Auth.addUser({
-          name: $scope.user.name,
-          email: $scope.user.email,
-          password: $scope.user.password,
-          role: $scope.user.role
+          name: $scope.userForm.name,
+          email: $scope.userForm.email,
+          password: $scope.userForm.password,
+          role: $scope.userForm.role
         })
         .then( function() {
           $scope.status = "User successfully created.";
         })
         .then( function() {
-          resetForm();
+          resetUserForm(form);
         })
         .catch( function(err) {
           err = err.data;
@@ -81,8 +93,16 @@ angular.module('wrongspotApp')
       }
     };
 
+    // Lot tab related functions
+    function resetLotForm() {
+      $scope.lotFormSubmitted = false;
+      $scope.lotForm = angular.copy(originalLot);
+      $scope.htmlLotForm.$setPristine();
+    }
+
     $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
+      socket.unsyncUpdates('user');
+      socket.unsyncUpdates('lot');
     });
   })
   .filter('capitalize', function() {
