@@ -35,6 +35,7 @@ exports.add = function(req, res, next) {
 
 /**
  * Creates a new user
+ * Should be removed due to no registration
  */
 exports.create = function (req, res, next) {
   var newUser = new User(req.body);

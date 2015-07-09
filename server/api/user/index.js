@@ -12,7 +12,7 @@ router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.get('/me', auth.isAuthenticated(), controller.me);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id', auth.isAuthenticated(), controller.show);
-router.post('/', controller.create);
+router.post('/', controller.create); // AMB - Should be removed
 router.post('/new', auth.hasRole('admin'), controller.add);
 
 module.exports = router;
