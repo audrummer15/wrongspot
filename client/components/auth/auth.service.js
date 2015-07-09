@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('wrongspotApp')
-  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
+  .factory('Auth', function Auth($location, $rootScope, $http,
+    User, Lot, $cookieStore, $q) {
     var currentUser = {};
     if($cookieStore.get('token')) {
       currentUser = User.get();
@@ -84,7 +85,7 @@ angular.module('wrongspotApp')
         }
 
         var cb = callback || angular.noop;
-        
+
         user.provider = 'local';
 
         return User.addUser(user,
@@ -115,6 +116,29 @@ angular.module('wrongspotApp')
         }, function(err) {
           return cb(err);
         }).$promise;
+      },
+
+      /**
+       * Add a new lot from Admin panel
+       *
+       * @param  {Object}   lot     - lot info
+       * @param  {Function} callback - optional
+       * @return {Promise}
+       */
+      addLot: function(lot, callback) {
+        if (!currentUser.role === 'admin') {
+          return new Error("You're not allowed to do that!");
+        }
+
+        var cb = callback || angular.noop;
+
+        return Lot.addLot(lot,
+          function(data) {
+            return cb(lot);
+          },
+          function(err) {
+            return cb(err);
+          }.bind(this)).$promise;
       },
 
       /**

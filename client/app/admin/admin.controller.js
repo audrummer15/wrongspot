@@ -94,11 +94,48 @@ angular.module('wrongspotApp')
     };
 
     // Lot tab related functions
-    function resetLotForm() {
+    function resetLotForm(form) {
       $scope.lotFormSubmitted = false;
       $scope.lotForm = angular.copy(originalLot);
-      $scope.htmlLotForm.$setPristine();
+      form.$setPristine();
     }
+
+    $scope.deleteLot = function(lot) {
+      $http.delete('/api/lots/' + lot._id)
+        .then(function() {
+          $scope.status = "Lot successfully removed.";
+        }).catch(function(err) {
+          $scope.status = err;
+        });
+    };
+
+    $scope.addLot = function(form) {
+      $scope.lotFormSubmitted = true;
+      $scope.status = "Ready";
+
+      if(form.$valid) {
+        Auth.addLot({
+          name: $scope.lotForm.name,
+          info: $scope.lotForm.info
+        })
+        .then( function() {
+          $scope.status = "Lot successfully created.";
+        })
+        .then( function() {
+          resetLotForm(form);
+        })
+        .catch( function(err) {
+          err = err.data;
+          $scope.errors = {};
+
+          // Update validity of form fields that match the mongoose errors
+          angular.forEach(err.errors, function(error, field) {
+            form[field].$setValidity('mongoose', false);
+            $scope.errors[field] = error.message;
+          });
+        });
+      }
+    };
 
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('user');

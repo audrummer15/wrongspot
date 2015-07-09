@@ -113,12 +113,57 @@
         <ul style="margin-top: 20px;" class="list-group">
           <li class="list-group-item"
             ng-repeat="lot in lots | orderBy:'name'">
-            <strong>{{lot.name}}</strong><br>
+            <strong>{{lot.name}}</strong><br />
+            <span class="text-muted">{{lot.info}}</span>
             <a ng-click="deleteLot(lot)" class="trash">
               <span class="glyphicon glyphicon-trash pull-right"></span>
             </a>
           </li>
         </ul>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <h1>Add Lot</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <form class="form" name="htmlLotForm"
+            ng-submit="addLot(htmlLotForm)" novalidate>
+
+            <div class="form-group" ng-class="{
+              'has-success': htmlLotForm.name.$valid && lotFormSubmitted,
+              'has-error': htmlLotForm.name.$invalid && lotFormSubmitted
+            }">
+              <label>Name</label>
+
+              <input type="text" name="name" class="form-control"
+                ng-model="lotForm.name"
+                     required/>
+              <p class="help-block"
+                ng-show="htmlLotForm.name.$error.required && lotFormSubmitted">
+                A name is required
+              </p>
+            </div>
+
+            <div class="form-group" ng-class="{
+              'has-success': htmlLotForm.info.$valid && lotFormSubmitted,
+              'has-error': htmlLotForm.info.$invalid && lotFormSubmitted
+            }">
+              <label>Info</label>
+
+              <input type="text" name="info" class="form-control"
+                ng-model="lotForm.info"/>
+            </div>
+
+            <div>
+              <button class="btn btn-primary btn-lg btn-login" type="submit">
+                Add
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </tab>
   </tabset>

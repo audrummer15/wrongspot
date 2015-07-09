@@ -43,6 +43,7 @@ exports.update = function(req, res) {
 };
 
 // Deletes a lot from the DB.
+// restriction: 'admin'
 exports.destroy = function(req, res) {
   Lot.findById(req.params.id, function (err, lot) {
     if(err) { return handleError(res, err); }
