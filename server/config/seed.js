@@ -7,6 +7,7 @@
 
 var Thing = require('../api/thing/thing.model');
 var User = require('../api/user/user.model');
+var Lot = require('../api/lot/lot.model');
 
 Thing.find({}).remove(function() {
   Thing.create({
@@ -46,4 +47,14 @@ User.find({}).remove(function() {
       console.log('finished populating users');
     }
   );
+});
+
+Lot.find({}).remove(function() {
+  Lot.create({
+    name : 'Eagles West',
+    info : '735 West Glenn'
+  }, {
+    name : 'Acre',
+    info : '1020 East Glenn'
+  });
 });
