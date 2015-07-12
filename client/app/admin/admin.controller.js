@@ -2,7 +2,7 @@
 
 angular.module('wrongspotApp')
   .controller('AdminCtrl', function ($scope, $http, $location,
-                                      Auth, User, Lot, socket) {
+                                      Auth, User, Region, Lot, socket) {
 
     $scope.isAdmin = Auth.isAdmin();
     if (!$scope.isAdmin) {
@@ -23,6 +23,10 @@ angular.module('wrongspotApp')
     $scope.users = User.query();
     socket.syncUpdates('user', $scope.users);
 
+    // Use the Region $resource to fetch all regions
+    $scope.regions = Region.query();
+    socket.syncUpdates('region', $scope.regions);
+
     // Use the Lot $resource to fetch all lots
     $scope.lots = Lot.query();
     socket.syncUpdates('lot', $scope.lots);
@@ -34,6 +38,11 @@ angular.module('wrongspotApp')
       role: ''
     };
 
+    $scope.regionForm = {
+      name: '',
+      info: ''
+    };
+
     $scope.lotForm = {
       name: '',
       info: ''
@@ -41,6 +50,7 @@ angular.module('wrongspotApp')
 
     $scope.status = "Ready";
     var originalUser = angular.copy($scope.userForm);
+    var originalRegion = angular.copy($scope.regionForm);
     var originalLot = angular.copy($scope.lotForm);
 
     // User tab related functions
@@ -80,6 +90,50 @@ angular.module('wrongspotApp')
         })
         .then( function() {
           resetUserForm(form);
+        })
+        .catch( function(err) {
+          err = err.data;
+          $scope.errors = {};
+
+          // Update validity of form fields that match the mongoose errors
+          angular.forEach(err.errors, function(error, field) {
+            form[field].$setValidity('mongoose', false);
+            $scope.errors[field] = error.message;
+          });
+        });
+      }
+    };
+
+    // Region tab related functions
+    function resetRegionForm(form) {
+      $scope.regionFormSubmitted = false;
+      $scope.regionForm = angular.copy(originalRegion);
+      form.$setPristine();
+    }
+
+    $scope.deleteRegion = function(region) {
+      $http.delete('/api/regions/' + region._id)
+        .then(function() {
+          $scope.status = "Region successfully removed.";
+        }).catch(function(err) {
+          $scope.status = err;
+        });
+    };
+
+    $scope.addRegion = function(form) {
+      $scope.regionFormSubmitted = true;
+      $scope.status = "Ready";
+
+      if(form.$valid) {
+        Auth.addRegion({
+          name: $scope.regionForm.name,
+          info: $scope.regionForm.info
+        })
+        .then( function() {
+          $scope.status = "Region successfully created.";
+        })
+        .then( function() {
+          resetRegionForm(form);
         })
         .catch( function(err) {
           err = err.data;

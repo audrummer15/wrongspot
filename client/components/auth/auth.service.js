@@ -2,7 +2,7 @@
 
 angular.module('wrongspotApp')
   .factory('Auth', function Auth($location, $rootScope, $http,
-    User, Lot, $cookieStore, $q) {
+    User, Region, Lot, $cookieStore, $q) {
     var currentUser = {};
     if($cookieStore.get('token')) {
       currentUser = User.get();
@@ -116,6 +116,30 @@ angular.module('wrongspotApp')
         }, function(err) {
           return cb(err);
         }).$promise;
+      },
+
+
+      /**
+       * Add a new region from Admin panel
+       *
+       * @param  {Object}   lot     - lot info
+       * @param  {Function} callback - optional
+       * @return {Promise}
+       */
+      addRegion: function(region, callback) {
+        if (!currentUser.role === 'admin') {
+          return new Error("You're not allowed to do that!");
+        }
+
+        var cb = callback || angular.noop;
+
+        return Region.addRegion(region,
+          function(data) {
+            return cb(region);
+          },
+          function(err) {
+            return cb(err);
+          }.bind(this)).$promise;
       },
 
       /**

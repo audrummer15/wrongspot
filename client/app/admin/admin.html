@@ -108,6 +108,65 @@
       </div>
     </tab>
 
+    <tab heading="Regions">
+      <div class="row col-lg-12">
+        <ul style="margin-top: 20px;" class="list-group">
+          <li class="list-group-item"
+            ng-repeat="region in regions | orderBy:'name'">
+            <strong>{{region.name}}</strong><br />
+            <span class="text-muted">{{region.info}}</span>
+            <a ng-click="deleteRegion(region)" class="trash">
+              <span class="glyphicon glyphicon-trash pull-right"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <h1>Add Region</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <form class="form" name="htmlRegionForm"
+            ng-submit="addRegion(htmlRegionForm)" novalidate>
+
+            <div class="form-group" ng-class="{
+              'has-success': htmlRegionForm.name.$valid && regionFormSubmitted,
+              'has-error': htmlRegionForm.name.$invalid && regionFormSubmitted
+            }">
+              <label>Name</label>
+
+              <input type="text" name="name" class="form-control"
+                ng-model="regionForm.name"
+                     required/>
+              <p class="help-block"
+                ng-show="htmlRegionForm.name.$error.required && regionFormSubmitted">
+                A name is required
+              </p>
+            </div>
+
+            <div class="form-group" ng-class="{
+              'has-success': htmlRegionForm.info.$valid && regionFormSubmitted,
+              'has-error': htmlRegionForm.info.$invalid && regionFormSubmitted
+            }">
+              <label>Info</label>
+
+              <input type="text" name="info" class="form-control"
+                ng-model="regionForm.info"/>
+            </div>
+
+            <div>
+              <button class="btn btn-primary btn-lg btn-login" type="submit">
+                Add
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </tab>
+
     <tab heading="Lots">
       <div class="row col-lg-12">
         <ul style="margin-top: 20px;" class="list-group">
