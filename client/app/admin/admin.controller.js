@@ -15,6 +15,7 @@ angular.module('wrongspotApp')
 
     socket.socket.on('message:userRoles', function (data) {
       $scope.userRoles = data.userRoles;
+      $scope.userForm.role = $scope.userRoles[0];
       $scope.isReady = true;
     });
 
@@ -30,7 +31,7 @@ angular.module('wrongspotApp')
       name: '',
       email: '',
       password: '',
-      role: 'user'
+      role: ''
     };
 
     $scope.lotForm = {
