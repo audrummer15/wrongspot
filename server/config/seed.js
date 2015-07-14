@@ -7,6 +7,7 @@
 
 var Thing = require('../api/thing/thing.model');
 var User = require('../api/user/user.model');
+var Region = require('../api/region/region.model');
 var Lot = require('../api/lot/lot.model');
 
 Thing.find({}).remove(function() {
@@ -50,12 +51,29 @@ User.find({}).remove(function() {
   );
 });
 
+var regionId;
+Region.find({}).remove(function() {
+  Region.create({
+    name : 'Auburn',
+    info : 'Entire Auburn Area'
+  }, {
+    name : 'Montgomery',
+    info : 'Downtown Montgomery'
+  }, function(err, data) {
+    regionId = data._id;
+  });
+});
+
 Lot.find({}).remove(function() {
   Lot.create({
-    name : 'Eagles West',
-    info : '735 West Glenn'
+    name : 'Eagles East',
+    info : '735 West Glenn',
+    region : regionId
   }, {
     name : 'Acre',
-    info : '1020 East Glenn'
+    info : '1020 East Glenn',
+    region : regionId
+  }, function() {
+    console.log('finished populating lots');
   });
 });

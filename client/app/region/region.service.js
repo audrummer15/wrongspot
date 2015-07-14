@@ -3,7 +3,7 @@
 angular.module('wrongspotApp')
   .factory('Region', function Region($resource) {
     // Public API here
-    return $resource('/api/regions/:id/:controller', {
+    return $resource('/api/regions/:id', {
       id: '@_id'
     },
     {

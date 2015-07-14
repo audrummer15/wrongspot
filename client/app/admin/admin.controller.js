@@ -10,6 +10,7 @@ angular.module('wrongspotApp')
     }
 
     $scope.isReady = false;
+    $scope.lotRegion = {};
 
     socket.socket.emit('request:userRoles');
 
@@ -28,8 +29,29 @@ angular.module('wrongspotApp')
     socket.syncUpdates('region', $scope.regions);
 
     // Use the Lot $resource to fetch all lots
-    $scope.lots = Lot.query();
-    socket.syncUpdates('lot', $scope.lots);
+    $scope.lots = Lot.query(function(data) {
+        angular.forEach($scope.lots, function(lot) {
+          if (lot.region) {
+            Region.get({id:lot.region}, function(region) {
+              $scope.lotRegion[lot._id] = region;
+            });
+          } else {
+            $scope.lotRegion[lot._id] = {name:"None"};
+          }
+        });
+    });
+    socket.syncUpdates('lot', $scope.lots, function(data, data2) {
+      $scope.lotRegion = {};
+      angular.forEach($scope.lots, function(lot) {
+        if (lot.region) {
+          Region.get({id:lot.region}, function(region) {
+            $scope.lotRegion[lot._id] = region;
+          });
+        } else {
+          $scope.lotRegion[lot._id] = {name:"None"};
+        }
+      });
+    });
 
     $scope.userForm = {
       name: '',
@@ -45,7 +67,8 @@ angular.module('wrongspotApp')
 
     $scope.lotForm = {
       name: '',
-      info: ''
+      info: '',
+      region: null
     };
 
     $scope.status = "Ready";
@@ -171,7 +194,8 @@ angular.module('wrongspotApp')
       if(form.$valid) {
         Auth.addLot({
           name: $scope.lotForm.name,
-          info: $scope.lotForm.info
+          info: $scope.lotForm.info,
+          region: $scope.lotForm.region
         })
         .then( function() {
           $scope.status = "Lot successfully created.";

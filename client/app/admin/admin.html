@@ -171,8 +171,8 @@
       <div class="row col-lg-12">
         <ul style="margin-top: 20px;" class="list-group">
           <li class="list-group-item"
-            ng-repeat="lot in lots | orderBy:'name'">
-            <strong>{{lot.name}}</strong><br />
+            ng-repeat="lot in lots | orderBy:'lotRegion[lot._id].name'">
+            <strong>{{lot.name}}</strong> ({{lotRegion[lot._id].name}})<br />
             <span class="text-muted">{{lot.info}}</span>
             <a ng-click="deleteLot(lot)" class="trash">
               <span class="glyphicon glyphicon-trash pull-right"></span>
@@ -214,6 +214,23 @@
 
               <input type="text" name="info" class="form-control"
                 ng-model="lotForm.info"/>
+            </div>
+
+            <div class="form-group" ng-class="{
+              'has-success': htmlLotForm.region.$valid && lotFormSubmitted,
+              'has-error': htmlLotForm.region.$invalid && lotFormSubmitted
+            }">
+              <label>Region</label>
+
+              <select name="region" class="form-control"
+                ng-options="region._id as region.name for region in regions"
+                ng-model="lotForm.region" required>
+              </select>
+              <p class="help-block"
+                ng-show="htmlLotForm.region.$error.required &&
+                 lotFormSubmitted">
+                A Region is required
+              </p>
             </div>
 
             <div>

@@ -5,7 +5,8 @@ var mongoose = require('mongoose'),
 
 var LotSchema = new Schema({
   name: String,
-  info: String
+  info: String,
+  region: {type: mongoose.Schema.Types.ObjectId, ref: 'Region'}
 });
 
 module.exports = mongoose.model('Lot', LotSchema);
