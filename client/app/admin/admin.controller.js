@@ -29,7 +29,7 @@ angular.module('wrongspotApp')
     socket.syncUpdates('region', $scope.regions);
 
     // Use the Lot $resource to fetch all lots
-    $scope.lots = Lot.query(function(data) {
+    $scope.lots = Lot.query(function() {
         angular.forEach($scope.lots, function(lot) {
           if (lot.region) {
             Region.get({id:lot.region}, function(region) {
@@ -40,7 +40,7 @@ angular.module('wrongspotApp')
           }
         });
     });
-    socket.syncUpdates('lot', $scope.lots, function(data, data2) {
+    socket.syncUpdates('lot', $scope.lots, function() {
       $scope.lotRegion = {};
       angular.forEach($scope.lots, function(lot) {
         if (lot.region) {
